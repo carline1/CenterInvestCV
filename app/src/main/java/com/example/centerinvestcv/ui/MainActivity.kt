@@ -1,11 +1,8 @@
 package com.example.centerinvestcv.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.commit
-import androidx.navigation.fragment.NavHostFragment
-import com.example.centerinvestcv.R
+import androidx.appcompat.app.AppCompatActivity
 import com.example.centerinvestcv.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         this.binding = binding
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController =navHostFragment.navController
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+//        val navController = navHostFragment.navController
     }
 }
