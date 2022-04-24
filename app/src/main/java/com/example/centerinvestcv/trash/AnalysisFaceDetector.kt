@@ -9,10 +9,10 @@ import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.example.centerinvestcv.model.FaceNetModel
+import com.example.centerinvestcv.utils.BitmapUtils
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -41,14 +41,10 @@ class AnalysisFaceDetector(
             return
         }
 
-//        if (mediaImage != null) {
         val rotation = imageProxy.imageInfo.rotationDegrees
-        val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+        val image = InputImage.fromMediaImage(mediaImage, rotation)
+        val imageBitmap = BitmapUtils.imageToBitmap(mediaImage, rotation)
 
-        // Real-time contour detection
-//        val realTimeOpts = FaceDetectorOptions.Builder()
-//            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL)
-//            .build()
         val realTimeOpts = FaceDetectorOptions.Builder()
             .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
             .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
@@ -56,14 +52,7 @@ class AnalysisFaceDetector(
             .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
             .build()
 
-//            val options = FaceDetectorOptions.Builder()
-//                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-//                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
-//                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-//                .enableTracking()
-//                .build()
-
-        val detector: FaceDetector = FaceDetection.getClient(realTimeOpts)
+        val detector = FaceDetection.getClient(realTimeOpts)
         detector.process(image)
             .addOnSuccessListener { faces ->
                 val listener = listener ?: return@addOnSuccessListener
@@ -71,8 +60,23 @@ class AnalysisFaceDetector(
                 val width = if (reverseDimens) imageProxy.height else imageProxy.width
                 val height = if (reverseDimens) imageProxy.width else imageProxy.height
 
+//                val faceBounds = faces.map { it.boundingBox.transform(width, height) }
                 val faceBounds = faces.map { it.boundingBox.transform(width, height) }
-                listener.onFacesDetected(faceBounds)
+//                val frameRotatedBitmap = BitmapUtils.rotateBitmap(
+//                    imageBitmap,
+//                    rotation.toFloat()
+//                )
+                val faceBitmaps =
+                    faces.map { BitmapUtils.cropRectFromBitmap(imageBitmap, it.boundingBox) }
+//                val faceBitmaps = emptyList<Bitmap>()
+                listener.onFacesDetected(faceBounds, faceBitmaps)
+
+
+//                val frameBitmap = image.bitmapInternal!!
+//                CoroutineScope(Dispatchers.Default).launch {
+//                    runModel(faces, frameBitmap)
+//                }
+
                 imageProxy.close()
 //                processFaceContourDetectionResult(faces)
             }
@@ -92,7 +96,8 @@ class AnalysisFaceDetector(
                     // Crop the frame using face.boundingBox.
                     // Convert the cropped Bitmap to a ByteBuffer.
                     // Finally, feed the ByteBuffer to the FaceNet model.
-                    val croppedBitmap = cropRectFromBitmap(cameraFrameBitmap, face.boundingBox)
+                    val croppedBitmap =
+                        BitmapUtils.cropRectFromBitmap(cameraFrameBitmap, face.boundingBox)
                     val subject = model.getFaceEmbedding(croppedBitmap)
 
 
@@ -159,46 +164,30 @@ class AnalysisFaceDetector(
                         }
                     }
                     Log.d("TAG", "Person identified as $bestScoreUserName")
-                    predictions.add(
-                        Prediction(
-                            face.boundingBox,
-                            bestScoreUserName
-                        )
-                    )
+//                    predictions.add(
+//                        Prediction(
+//                            face.boundingBox,
+//                            bestScoreUserName
+//                        )
+//                    )
                 } catch (e: Exception) {
                     // If any exception occurs with this box and continue with the next boxes.
                     Log.e("Model", "Exception in FrameAnalyser : ${e.message}")
                     continue
                 }
             }
-            withContext(Dispatchers.Main) {
-                // Clear the BoundingBoxOverlay and set the new results ( boxes ) to be displayed.
-                boundingBoxOverlay.faceBoundingBoxes = predictions
-                boundingBoxOverlay.invalidate()
-            }
+//            withContext(Dispatchers.Main) {
+//                // Clear the BoundingBoxOverlay and set the new results ( boxes ) to be displayed.
+//                boundingBoxOverlay.faceBoundingBoxes = predictions
+//                boundingBoxOverlay.invalidate()
+//            }
         }
-    }
-
-    fun cropRectFromBitmap(source: Bitmap, rect: Rect ): Bitmap {
-        var width = rect.width()
-        var height = rect.height()
-        if ( (rect.left + width) > source.width ){
-            width = source.width - rect.left
-        }
-        if ( (rect.top + height ) > source.height ){
-            height = source.height - rect.top
-        }
-        val croppedBitmap = Bitmap.createBitmap( source , rect.left , rect.top , width , height )
-        // Uncomment the below line if you want to save the input image.
-        // BitmapUtils.saveBitmap( context , croppedBitmap , "source" )
-        return croppedBitmap
     }
 
     // Compute the L2 norm of ( x2 - x1 )
     private fun L2Norm(x1: FloatArray, x2: FloatArray): Float {
         return sqrt(x1.mapIndexed { i, xi -> (xi - x2[i]).pow(2) }.sum())
     }
-
 
     // Compute the cosine of the angle between x1 and x2.
     private fun cosineSimilarity(x1: FloatArray, x2: FloatArray): Float {
@@ -224,23 +213,8 @@ class AnalysisFaceDetector(
         return RectF(scaledLeft, scaledTop, scaledRight, scaledBottom)
     }
 
-//    private fun processFaceContourDetectionResult(faces: List<Face>) {
-//        // Task completed successfully
-//        if (faces.isEmpty()) {
-////            Toast.makeText(context, "No face found", Toast.LENGTH_LONG).show()
-//            return
-//        }
-////        mGraphicOverlay.clear()
-////        for (i in faces.indices) {
-////            val face: Face = faces[i]
-////            val faceGraphic = FaceContourGraphic(mGraphicOverlay)
-////            mGraphicOverlay.add(faceGraphic)
-////            faceGraphic.updateFace(face)
-////        }
-//    }
-
     interface Listener {
-        fun onFacesDetected(faceBounds: List<RectF>)
+        fun onFacesDetected(faceBounds: List<RectF>, faces: List<Bitmap>)
 
 //        fun onError(exception: Exception)
     }

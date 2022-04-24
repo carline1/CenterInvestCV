@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Desktop/GitHub/CenterInvestCV/app/src/main/res/drawable/face_add_background.xml" value="0.176" />
+        <entry key="..\:/Desktop/GitHub/CenterInvestCV/app/src/main/res/drawable/ic_face_border_frame.xml" value="0.1325" />
         <entry key="..\:/Desktop/GitHub/CenterInvestCV/app/src/main/res/layout/activity_main.xml" value="0.24010416666666667" />
+        <entry key="..\:/Desktop/GitHub/CenterInvestCV/app/src/main/res/layout/fragment_face_add.xml" value="0.2" />
         <entry key="..\:/Desktop/GitHub/CenterInvestCV/app/src/main/res/layout/fragment_main.xml" value="0.25416666666666665" />
       </map>
     </option>
