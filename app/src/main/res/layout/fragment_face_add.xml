@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".ui.fragments.FaceAddFragment">
+    tools:context=".ui.fragments.face_add.FaceAddFragment">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
@@ -36,9 +36,9 @@
     <!--        app:layout_constraintTop_toTopOf="@id/previewView"-->
     <!--        tools:ignore="contentDescription" />-->
 
-    <com.example.centerinvestcv.trash.FaceContourOverlay
+    <com.example.centerinvestcv.ui.common.views.FaceContourOverlay
         android:id="@+id/faceContourOverlay"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/previewView"

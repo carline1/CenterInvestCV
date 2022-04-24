@@ -17,8 +17,8 @@ import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.example.centerinvestcv.model.FaceNetModel
-import com.example.centerinvestcv.trash.AnalysisFaceDetector
+import com.example.centerinvestcv.ml.AnalysisFaceDetector
+import com.example.centerinvestcv.ml.model.FaceNetModel
 import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutorService
 
@@ -63,7 +63,7 @@ object CameraConnectUtils {
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "Permissions not granted by the user.",
+                    "Разрешение не было предоставлено пользователем",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -125,8 +125,8 @@ object CameraConnectUtils {
                 this, cameraSelector, preview, imageAnalysis
             )
 
-        } catch (exc: Exception) {
-            Log.e("TAG", "Use case binding failed", exc)
+        } catch (e: Exception) {
+            Log.e("TAG", "Ошибка соединения cameraProvider с жизненным циклом", e)
         }
     }
 
@@ -179,10 +179,6 @@ object CameraConnectUtils {
                 listener?.drawOverlay(faceBounds)
                 listener?.drawFace(faces)
             }
-
-//            override fun onError(exception: Exception) {
-//                Log.d("TAG", "Face detection error", exception)
-//            }
         }
         return faceDetector
     }

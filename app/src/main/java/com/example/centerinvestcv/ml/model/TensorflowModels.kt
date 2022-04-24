@@ -1,6 +1,6 @@
-package com.example.centerinvestcv.model
+package com.example.centerinvestcv.ml.model
 
-class Models {
+class TensorflowModels {
 
     companion object {
 

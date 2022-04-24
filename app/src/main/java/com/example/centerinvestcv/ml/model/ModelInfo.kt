@@ -1,4 +1,4 @@
-package com.example.centerinvestcv.model
+package com.example.centerinvestcv.ml.model
 
 data class ModelInfo(
     val name: String,

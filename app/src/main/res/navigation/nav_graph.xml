@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.example.centerinvestcv.ui.fragments.MainFragment"
+        android:name="com.example.centerinvestcv.ui.fragments.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
     <fragment
         android:id="@+id/faceAddFragment"
-        android:name="com.example.centerinvestcv.ui.fragments.FaceAddFragment"
+        android:name="com.example.centerinvestcv.ui.fragments.face_add.FaceAddFragment"
         android:label="fragment_face_add"
         tools:layout="@layout/fragment_face_add" />
 </navigation>

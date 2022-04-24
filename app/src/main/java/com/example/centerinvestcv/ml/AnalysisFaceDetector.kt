@@ -1,4 +1,4 @@
-package com.example.centerinvestcv.trash
+package com.example.centerinvestcv.ml
 
 import android.annotation.SuppressLint
 import android.gesture.Prediction
@@ -8,13 +8,15 @@ import android.graphics.RectF
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import com.example.centerinvestcv.model.FaceNetModel
+import com.example.centerinvestcv.ml.model.FaceNetModel
 import com.example.centerinvestcv.utils.BitmapUtils
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -71,11 +73,9 @@ class AnalysisFaceDetector(
 //                val faceBitmaps = emptyList<Bitmap>()
                 listener.onFacesDetected(faceBounds, faceBitmaps)
 
-
-//                val frameBitmap = image.bitmapInternal!!
-//                CoroutineScope(Dispatchers.Default).launch {
-//                    runModel(faces, frameBitmap)
-//                }
+                CoroutineScope(Dispatchers.Unconfined).launch {
+                    runModel(faces, imageBitmap)
+                }
 
                 imageProxy.close()
 //                processFaceContourDetectionResult(faces)
@@ -89,7 +89,7 @@ class AnalysisFaceDetector(
     }
 
     private suspend fun runModel(faces: List<Face>, cameraFrameBitmap: Bitmap) {
-        withContext(Dispatchers.IO) {
+        withContext(Dispatchers.Unconfined) {
             val predictions = ArrayList<Prediction>()
             for (face in faces) {
                 try {
@@ -172,7 +172,7 @@ class AnalysisFaceDetector(
 //                    )
                 } catch (e: Exception) {
                     // If any exception occurs with this box and continue with the next boxes.
-                    Log.e("Model", "Exception in FrameAnalyser : ${e.message}")
+                    Log.e("TAG", "Exception in FrameAnalyser : ${e.localizedMessage}")
                     continue
                 }
             }
