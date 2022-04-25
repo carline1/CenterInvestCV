@@ -23,9 +23,9 @@ import java.util.concurrent.Executors
 class Camera(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner,
-    private val faceNetModel: FaceNetModel,
+    faceNetModel: FaceNetModel,
     private val lensFacing: Int,
-    private val previewView: View,
+    previewView: View,
     private val surfaceProvider: Preview.SurfaceProvider
 ) {
     private var listener: CameraListener? = null
@@ -48,6 +48,10 @@ class Camera(
                 this@Camera.listener?.drawOverlay(faceBounds)
                 this@Camera.listener?.drawFace(faces)
                 currentFaces = faces
+            }
+
+            override fun onUnidentifiedPersonFinded(isUnidentifiedPersonFind: Boolean) {
+                this@Camera.listener?.hideData(isUnidentifiedPersonFind)
             }
         }
     }
@@ -165,9 +169,9 @@ class Camera(
     }
 
     interface CameraListener {
-        fun drawOverlay(faceBounds: List<RectF>)
-
-        fun drawFace(faces: List<Bitmap>)
+        fun drawOverlay(faceBounds: List<RectF>): Unit? = null
+        fun drawFace(faces: List<Bitmap>): Unit? = null
+        fun hideData(hide: Boolean): Unit? = null
     }
 
 }

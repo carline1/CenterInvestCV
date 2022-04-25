@@ -114,14 +114,18 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
 //                ).subscribeOn(Schedulers.io()).subscribe()
 //                Toast.makeText(requireContext(), "Лицо успешно сохранено", Toast.LENGTH_LONG).show()
 //            } ?: Toast.makeText(requireContext(), "Лицо не распознано", Toast.LENGTH_LONG).show()
-            camera?.currentFaces?.get(0)?.let {
-                viewModel.saveFaceToDatabase(
-                    FaceEntity(
-                        faceImage = faceNetModel.getFaceEmbedding(it)
-                    )
-                ).subscribeOn(Schedulers.io()).subscribe()
-                Toast.makeText(requireContext(), "Лицо успешно сохранено", Toast.LENGTH_LONG).show()
-            } ?: Toast.makeText(requireContext(), "Лицо не распознано", Toast.LENGTH_LONG).show()
+            if (camera?.currentFaces?.isNotEmpty() == true) {
+                camera?.currentFaces?.get(0)?.let {
+                    viewModel.saveFaceToDatabase(
+                        FaceEntity(
+                            faceImage = faceNetModel.getFaceEmbedding(it)
+                        )
+                    ).subscribeOn(Schedulers.io()).subscribe()
+                    Toast.makeText(requireContext(), "Лицо успешно сохранено", Toast.LENGTH_LONG).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Лицо не распознано", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

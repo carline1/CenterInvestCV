@@ -179,6 +179,10 @@ object CameraConnectUtils {
                 listener?.drawOverlay(faceBounds)
                 listener?.drawFace(faces)
             }
+
+            override fun onUnidentifiedPersonFinded(isUnidentifiedPersonFind: Boolean) {
+
+            }
         }
         return faceDetector
     }

@@ -1,7 +1,6 @@
 package com.example.centerinvestcv.ml
 
 import android.annotation.SuppressLint
-import android.gesture.Prediction
 import android.graphics.Bitmap
 import android.graphics.Rect
 import android.graphics.RectF
@@ -90,7 +89,7 @@ class AnalysisFaceDetector(
 
     private suspend fun runModel(faces: List<Face>, cameraFrameBitmap: Bitmap) {
         withContext(Dispatchers.Unconfined) {
-            val predictions = ArrayList<Prediction>()
+            var unidentifiedPersons = 0
             for (face in faces) {
                 try {
                     // Crop the frame using face.boundingBox.
@@ -153,11 +152,15 @@ class AnalysisFaceDetector(
                         if (avgScores.maxOrNull()!! > model.model.cosineThreshold) {
                             names[avgScores.indexOf(avgScores.maxOrNull()!!)]
                         } else {
+                            unidentifiedPersons += 1
+                            listener?.onUnidentifiedPersonFinded(true)
                             "Unknown"
                         }
                     } else {
                         // In case of L2 norm, choose the lowest value.
                         if (avgScores.minOrNull()!! > model.model.l2Threshold) {
+                            listener?.onUnidentifiedPersonFinded(true)
+                            unidentifiedPersons += 1
                             "Unknown"
                         } else {
                             names[avgScores.indexOf(avgScores.minOrNull()!!)]
@@ -175,6 +178,11 @@ class AnalysisFaceDetector(
                     Log.e("TAG", "Exception in FrameAnalyser : ${e.localizedMessage}")
                     continue
                 }
+            }
+            if (faces.isNotEmpty() && unidentifiedPersons == 0) {
+                listener?.onUnidentifiedPersonFinded(false)
+            } else {
+                listener?.onUnidentifiedPersonFinded(true)
             }
 //            withContext(Dispatchers.Main) {
 //                // Clear the BoundingBoxOverlay and set the new results ( boxes ) to be displayed.
@@ -215,6 +223,7 @@ class AnalysisFaceDetector(
 
     interface Listener {
         fun onFacesDetected(faceBounds: List<RectF>, faces: List<Bitmap>)
+        fun onUnidentifiedPersonFinded(isUnidentifiedPersonFind: Boolean)
 
 //        fun onError(exception: Exception)
     }

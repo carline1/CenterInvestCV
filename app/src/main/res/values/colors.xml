@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="apple">#00C801</color>
     <color name="gray">#E5E5E5</color>
+    <color name="dark_gray">#918B97</color>
 </resources>

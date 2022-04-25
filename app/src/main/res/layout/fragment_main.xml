@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray"
     tools:context=".ui.fragments.main.MainFragment">
 
     <androidx.camera.view.PreviewView
@@ -122,12 +123,13 @@
     </LinearLayout>
 
     <View
-        android:layout_width="318dp"
+        android:layout_width="300dp"
         android:layout_height="1dp"
         android:layout_marginEnd="15dp"
         android:background="#77747B"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction1" />
+        app:layout_constraintTop_toBottomOf="@id/transaction1"
+        app:layout_constraintBottom_toTopOf="@id/transaction2"/>
 
     <LinearLayout
         android:id="@+id/transaction2"
@@ -173,12 +175,13 @@
     </LinearLayout>
 
     <View
-        android:layout_width="318dp"
+        android:layout_width="300dp"
         android:layout_height="1dp"
         android:layout_marginEnd="15dp"
         android:background="#77747B"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction2" />
+        app:layout_constraintTop_toBottomOf="@id/transaction2"
+        app:layout_constraintBottom_toTopOf="@id/transaction3"/>
 
     <LinearLayout
         android:id="@+id/transaction3"
@@ -245,6 +248,7 @@
         android:layout_marginHorizontal="15dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
+        app:cardBackgroundColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/accountsTitle">
@@ -316,6 +320,7 @@
         android:layout_marginTop="12dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
+        app:cardBackgroundColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/account1">
@@ -379,11 +384,11 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/amountGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="account1_amount, account2_amount, transaction1_amount, transaction2_amount, transaction3_amount"
-        tools:ignore="NotSibling" />
+<!--    <androidx.constraintlayout.widget.Group-->
+<!--        android:id="@+id/amountGroup"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:constraint_referenced_ids="account1_amount, account2_amount, transaction1_amount, transaction2_amount, transaction3_amount"-->
+<!--        tools:ignore="NotSibling" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
