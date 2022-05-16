@@ -1,5 +1,6 @@
 package com.example.centerinvestcv.ui.fragments.main
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,18 +9,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.camera.core.CameraSelector
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.centerinvestcv.databinding.FragmentMainBinding
-import com.example.centerinvestcv.ml.model.FaceNetModel
-import com.example.centerinvestcv.ml.model.TensorflowModels
-import com.example.centerinvestcv.utils.Camera
+import com.example.centerinvestcv.databinding.MainFragmentBinding
 import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.centerinvest.hidingpersonaldata.ml.model.FaceNetModel
+import ru.centerinvest.hidingpersonaldata.ml.model.TensorflowModels
+import ru.centerinvest.hidingpersonaldata.utils.Camera
 
 class MainFragment : Fragment(), Camera.CameraListener {
 
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: MainFragmentViewModel by viewModels()
@@ -35,10 +37,10 @@ class MainFragment : Fragment(), Camera.CameraListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
 
-        return _binding?.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,8 +61,8 @@ class MainFragment : Fragment(), Camera.CameraListener {
                 it,
                 binding.previewView.surfaceProvider
             )
-            if (camera?.allPermissionsGranted() == true) {
-                camera?.startCamera()
+            if (allPermissionsGranted()) {
+                camera?.startCamera(Camera.FaceAnalizerType.Recognize)
             } else {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
@@ -77,13 +79,17 @@ class MainFragment : Fragment(), Camera.CameraListener {
 //                    Log.d("TAG", face.faceImage.asList().toString())
 //                }
 
-                    val faceList = ArrayList(list.map { (it.id.toString() to it.faceImage) })
-                    camera?.faceDetector?.faceList = faceList
+                    val faceList = ArrayList(list.map { (it.id.toString() to it.imageData) })
+                    camera?.faceRecognizer?.faceList = faceList
                 }, {
                     Log.d("TAG", "GG")
                 })
         }
 
+    }
+
+    private fun allPermissionsGranted() = Camera.REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun hideViewValues(hiddenViews: List<TextView>) {
@@ -122,6 +128,11 @@ class MainFragment : Fragment(), Camera.CameraListener {
 //        binding.transaction2Amount.isVisible = !hide
 //        binding.transaction3Amount.isVisible = !hide
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

@@ -9,10 +9,34 @@
         android:id="@+id/mainFragment"
         android:name="com.example.centerinvestcv.ui.fragments.main.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/main_fragment" />
     <fragment
         android:id="@+id/faceAddFragment"
         android:name="com.example.centerinvestcv.ui.fragments.face_add.FaceAddFragment"
         android:label="fragment_face_add"
-        tools:layout="@layout/fragment_face_add" />
+        tools:layout="@layout/face_add_fragment" />
+    <fragment
+        android:id="@+id/securityFragment"
+        android:name="com.example.centerinvestcv.ui.fragments.security.SecurityFragment"
+        android:label="SecurityFragment" >
+        <action
+            android:id="@+id/action_securityFragment_to_faceManagerFragment"
+            app:destination="@id/faceManagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.centerinvestcv.ui.fragments.settings.SettingsFragment"
+        android:label="SettingsFragment" >
+        <action
+            android:id="@+id/action_settingsFragment_to_securityFragment"
+            app:destination="@id/securityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/faceManagerFragment"
+        android:name="com.example.centerinvestcv.ui.fragments.face_manager_fragment.FaceManagerFragment"
+        android:label="FaceManagerFragment" >
+        <action
+            android:id="@+id/action_faceManagerFragment_to_faceAddFragment"
+            app:destination="@id/faceAddFragment" />
+    </fragment>
 </navigation>

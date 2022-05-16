@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.centerinvestcv.db.dao.FaceEntity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
@@ -15,6 +16,12 @@ interface FaceDao {
 
     @Query("SELECT * FROM ${FaceEntity.TABLE_NAME}")
     fun loadAllFaceEntities(): Single<List<FaceEntity>>
+
+    @Query("DELETE FROM ${FaceEntity.TABLE_NAME} WHERE id like :id")
+    fun deleteFaceEntity(id: Int): Completable
+
+    @Query("UPDATE ${FaceEntity.TABLE_NAME} SET name = :newName WHERE id = :id")
+    fun editFaceEntity(id: Int, newName: String): Completable
 
 //    @Query("SELECT * FROM ${FaceEntity.TABLE_NAME}")
 //    fun loadAllFavouriteEntities(): Single<List<FaceEntity>>

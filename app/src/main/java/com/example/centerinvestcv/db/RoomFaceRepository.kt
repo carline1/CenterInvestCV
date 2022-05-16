@@ -13,6 +13,10 @@ class RoomFaceRepository(private val faceDao: FaceDao) {
     fun loadAllFaceEntities(): Single<List<FaceEntity>> =
         faceDao.loadAllFaceEntities()
 
+    fun deleteFaceEntity(id: Int): Completable = faceDao.deleteFaceEntity(id)
+
+    fun editFaceEntity(id: Int, newName: String): Completable =
+        faceDao.editFaceEntity(id, newName)
 
 //    fun loadAllFavouriteEntities(): Single<List<FavouriteIdsEntity>> =
 //        faceDao.loadAllFavouriteEntities()

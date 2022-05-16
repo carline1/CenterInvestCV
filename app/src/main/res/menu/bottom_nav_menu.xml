@@ -6,8 +6,8 @@
         android:title="@string/main_screen" />
 
     <item
-        android:id="@+id/faceAddFragment"
-        android:icon="@drawable/ic_add"
-        android:title="@string/add_face"
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_more"
+        android:title="@string/more"
         android:color = "@color/gray"/>
 </menu>

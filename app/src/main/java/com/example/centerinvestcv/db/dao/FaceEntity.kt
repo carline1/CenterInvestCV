@@ -11,8 +11,11 @@ data class FaceEntity(
     @ColumnInfo(name = "id")
     val id: Int = 0,
 
-    @ColumnInfo(name = "faceImage")
-    val faceImage: FloatArray
+    @ColumnInfo(name = "name")
+    val name: String,
+
+    @ColumnInfo(name = "imageData")
+    val imageData: FloatArray
 
 ) {
     companion object {
@@ -26,14 +29,18 @@ data class FaceEntity(
         other as FaceEntity
 
         if (id != other.id) return false
-        if (!faceImage.contentEquals(other.faceImage)) return false
+        if (name != other.name) return false
+        if (!imageData.contentEquals(other.imageData)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + faceImage.contentHashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + imageData.contentHashCode()
         return result
     }
+
+
 }

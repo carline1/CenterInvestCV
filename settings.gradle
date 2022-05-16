@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CenterInvestCV"
 include ':app'
+include ':hidingpersonaldata'

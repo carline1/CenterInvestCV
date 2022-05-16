@@ -6,16 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.centerinvestcv.R
-import com.example.centerinvestcv.databinding.ActivityMainBinding
+import com.example.centerinvestcv.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private var binding: ActivityMainBinding? = null
+    private var binding: MainActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
+        val binding = MainActivityBinding.inflate(LayoutInflater.from(this))
         this.binding = binding
         setContentView(binding.root)
 
@@ -25,5 +25,10 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = binding.bottomNavigationView
         NavigationUI.setupWithNavController(bottomNavigationView, navController)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }

@@ -38,13 +38,17 @@ android {
         mlModelBinding true
     }
 
-    apply plugin: 'androidx.navigation.safeargs'
+//    apply plugin: 'androidx.navigation.safeargs'
+    namespace 'com.example.centerinvestcv'
 }
 
 dependencies {
+
+    // Tensorflow Lite
     implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
     implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.3.0'
+
     def camerax_version = "1.1.0-beta01"
     implementation "androidx.camera:camera-core:${camerax_version}"
     implementation "androidx.camera:camera-camera2:${camerax_version}"
@@ -85,10 +89,20 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-rxjava3:$room_version"
 
+    // SQLCipher
+    def sqlcipher_version = "4.5.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "net.zetetic:android-database-sqlcipher:$sqlcipher_version@aar"
+
     // Dagger
     def dagger_version = "2.41"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
+
+    implementation project(":hidingpersonaldata")
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
