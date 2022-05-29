@@ -21,7 +21,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 
-class AnalysisFace(
+class AnalysisFaceRecognizer(
     private val previewWidth: Float,
     private val previewHeight: Float,
     private val isFrontLens: Boolean,

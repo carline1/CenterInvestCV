@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.centerinvestcv.R
 import com.example.centerinvestcv.databinding.FaceManagerFragmentBinding
 import com.example.centerinvestcv.ui.common.views.CustomAlertDialog
+import com.example.centerinvestcv.utils.SharedPreferenceUtil.isHideDataEnabled
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.centerinvest.hidingpersonaldata.di.RoomFaceComponentViewModel
@@ -22,10 +23,9 @@ class FaceManagerFragment : Fragment() {
     private var _binding: FaceManagerFragmentBinding? = null
     private val binding get() = _binding!!
 
-    //    private val viewModel: FaceManagerViewModel by viewModels()
-    private val roomFaceViewModel: RoomFaceComponentViewModel by viewModels()
+    private val roomFaceComponentViewModel: RoomFaceComponentViewModel by viewModels()
     private val viewModel: FaceManagerViewModel by viewModels() {
-        FaceManagerViewModel.Factory(roomFaceViewModel.roomFaceComponent.roomFaceRepository)
+        FaceManagerViewModel.Factory(roomFaceComponentViewModel.roomFaceComponent.roomFaceRepository)
     }
 
     private var adapter: FaceManagerAdapter? = null
@@ -49,52 +49,9 @@ class FaceManagerFragment : Fragment() {
     private fun setUpUi() {
         adapter = FaceManagerAdapter(object : FaceManagerAdapter.Actions {
             override fun editFaceName(id: Int) {
-//                val saveFaceAlertDialog = AlertDialog.Builder(requireContext()).create()
-//                val saveFaceAlertDialogLayout = LayoutInflater.from(requireContext())
-//                    .inflate(R.layout.custom_alert_dialog, null)
-//                saveFaceAlertDialog.apply {
-//                    setView(saveFaceAlertDialogLayout)
-//                    setCancelable(false)
-//                }
-//                saveFaceAlertDialogLayout.let { layout ->
-//                    val editText = layout.findViewById<EditText>(R.id.editText)
-//                    layout.findViewById<TextView>(R.id.title).text = "Изменение названия лица"
-//                    layout.findViewById<TextView>(R.id.negativeButton).apply {
-//                        text = "Отмена"
-//                        setOnClickListener { saveFaceAlertDialog.cancel() }
-//                    }
-//                    layout.findViewById<TextView>(R.id.positiveButton).apply {
-//                        text = "Сохранить"
-//                        setOnClickListener {
-//                            if (editText.text.toString().isNotBlank()) {
-//
-//                                viewModel.editFaceEntity(id, editText.text.toString())
-//                                    .subscribeOn(Schedulers.io())
-//                                    .observeOn(AndroidSchedulers.mainThread())
-//                                    .subscribe({
-//                                        loadFaces()
-//                                        Toast.makeText(
-//                                            requireContext(),
-//                                            "Название лица изменено",
-//                                            Toast.LENGTH_LONG
-//                                        ).show()
-//                                    }) {
-//                                        Toast.makeText(
-//                                            requireContext(),
-//                                            "Что-то пошло не так",
-//                                            Toast.LENGTH_SHORT
-//                                        ).show()
-//                                    }
-//                                saveFaceAlertDialog.cancel()
-//                            } else {
-//                                editText.error = "Поле не может быть пустым"
-//                            }
-//                        }
-//                    }
-//                }
-//                saveFaceAlertDialog.show()
                 val alert = LayoutInflater.from(requireContext())
                     .inflate(R.layout.custom_alert_dialog, null, false) as CustomAlertDialog
+
                 alert.showDialog(
                     getString(R.string.change_face_name),
                     getString(R.string.cancel),
@@ -149,6 +106,13 @@ class FaceManagerFragment : Fragment() {
             back.setOnClickListener {
                 findNavController().popBackStack()
             }
+            hidingDataSwitcher.apply{
+                isChecked = requireContext().isHideDataEnabled
+                setOnCheckedChangeListener { _, isChecked ->
+                    requireContext().isHideDataEnabled = isChecked
+                    adapter?.notifyDataSetChanged()
+                }
+            }
         }
 
         loadFaces()
@@ -157,6 +121,7 @@ class FaceManagerFragment : Fragment() {
     private fun loadFaces() {
         viewModel.loadAllFaceEntities()
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
                 val faceList: MutableList<FaceManagerAdapter.FaceViewHolderModel> =
                     (list.map {

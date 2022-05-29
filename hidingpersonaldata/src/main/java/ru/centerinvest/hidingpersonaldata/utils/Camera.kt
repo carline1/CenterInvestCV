@@ -14,7 +14,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import ru.centerinvest.hidingpersonaldata.ml.AnalysisFace
+import ru.centerinvest.hidingpersonaldata.ml.AnalysisFaceRecognizer
 import ru.centerinvest.hidingpersonaldata.ml.AnalysisFaceDetector
 import ru.centerinvest.hidingpersonaldata.ml.model.FaceNetModel
 import java.util.concurrent.Executors
@@ -36,13 +36,13 @@ class Camera(
     private var height = previewView.height * previewView.scaleY
 //    private val rotation = previewView.display.rotation
 
-    val faceRecognizer = AnalysisFace(
+    val faceRecognizer = AnalysisFaceRecognizer(
         previewWidth = width,
         previewHeight = height,
         isFrontLens = lensFacing == CameraSelector.LENS_FACING_FRONT,
         model = faceNetModel
     ).apply {
-        recognizeListener = object : AnalysisFace.RecognizeListener {
+        recognizeListener = object : AnalysisFaceRecognizer.RecognizeListener {
 //            override fun onFacesDetected(faceBounds: List<RectF>, faces: List<Bitmap>) {
 //                this@Camera.listener?.drawOverlay(faceBounds)
 //                this@Camera.listener?.drawFace(faces)

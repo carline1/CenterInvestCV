@@ -14,6 +14,7 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.centerinvestcv.databinding.MainFragmentBinding
+import com.example.centerinvestcv.utils.SharedPreferenceUtil.isHideDataEnabled
 import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.centerinvest.hidingpersonaldata.di.RoomFaceComponentViewModel
 import ru.centerinvest.hidingpersonaldata.ml.model.FaceNetModel
@@ -25,7 +26,6 @@ class MainFragment : Fragment(), Camera.CameraListener {
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
-    //    private val viewModel: MainFragmentViewModel by viewModels()
     private val roomFaceViewModel: RoomFaceComponentViewModel by viewModels()
     private val viewModel: MainFragmentViewModel by viewModels() {
         MainFragmentViewModel.Factory(roomFaceViewModel.roomFaceComponent.roomFaceRepository)
@@ -57,38 +57,37 @@ class MainFragment : Fragment(), Camera.CameraListener {
             useGpu = true,
             useXNNPack = true
         )
-        binding.previewView.doOnLayout {
-            camera = Camera(
-                requireActivity(),
-                this,
-                faceNetModel,
-                lensFacing,
-                it,
-                binding.previewView.surfaceProvider
-            )
-            if (allPermissionsGranted()) {
-                camera?.startCamera(Camera.FaceAnalizerType.Recognize)
-            } else {
-                ActivityCompat.requestPermissions(
+        if (requireContext().isHideDataEnabled) {
+            binding.previewView.doOnLayout {
+                camera = Camera(
                     requireActivity(),
-                    Camera.REQUIRED_PERMISSIONS,
-                    Camera.REQUEST_CODE_PERMISSIONS
+                    this,
+                    faceNetModel,
+                    lensFacing,
+                    it,
+                    binding.previewView.surfaceProvider
                 )
+
+                if (allPermissionsGranted()) {
+                    camera?.startCamera(Camera.FaceAnalizerType.Recognize)
+                } else {
+                    ActivityCompat.requestPermissions(
+                        requireActivity(),
+                        Camera.REQUIRED_PERMISSIONS,
+                        Camera.REQUEST_CODE_PERMISSIONS
+                    )
+                }
+                camera?.attachListener(this)
+
+                viewModel.loadAllFaceEntities()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ list ->
+                        val faceList = ArrayList(list.map { (it.id.toString() to it.imageData) })
+                        camera?.faceRecognizer?.faceList = faceList
+                    }, {
+                        Log.d("TAG", "GG")
+                    })
             }
-            camera?.attachListener(this)
-
-            viewModel.loadAllFaceEntities()
-                .subscribeOn(Schedulers.io())
-                .subscribe({ list ->
-//                it.forEach { face ->
-//                    Log.d("TAG", face.faceImage.asList().toString())
-//                }
-
-                    val faceList = ArrayList(list.map { (it.id.toString() to it.imageData) })
-                    camera?.faceRecognizer?.faceList = faceList
-                }, {
-                    Log.d("TAG", "GG")
-                })
         }
 
     }

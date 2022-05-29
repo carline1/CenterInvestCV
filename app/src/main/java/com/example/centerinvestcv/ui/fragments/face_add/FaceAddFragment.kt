@@ -33,9 +33,9 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
     private var _binding: FaceAddFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val roomFaceViewModel: RoomFaceComponentViewModel by viewModels()
+    private val roomFaceComponentViewModel: RoomFaceComponentViewModel by viewModels()
     private val viewModel: FaceAddViewModel by viewModels() {
-        FaceAddViewModel.Factory(roomFaceViewModel.roomFaceComponent.roomFaceRepository)
+        FaceAddViewModel.Factory(roomFaceComponentViewModel.roomFaceComponent.roomFaceRepository)
     }
 
     private lateinit var faceNetModel: FaceNetModel
@@ -56,7 +56,6 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setObservers()
         setUpUI()
 
         faceNetModel = FaceNetModel(
@@ -65,7 +64,7 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
             useGpu = true,
             useXNNPack = true
         )
-//        getPermissions(faceNetModel, cameraExecutor, binding.previewView)
+
         binding.previewView.doOnLayout {
             camera = Camera(
                 requireActivity(),
@@ -89,10 +88,6 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
             viewModel.loadAllFaceEntities()
                 .subscribeOn(Schedulers.io())
                 .subscribe({ list ->
-//                it.forEach { face ->
-//                    Log.d("TAG", face.faceImage.asList().toString())
-//                }
-
                     val faceList = ArrayList(list.map { (it.id.toString() to it.imageData) })
                     camera?.faceRecognizer?.faceList = faceList
                 }, {
@@ -117,12 +112,6 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
                 ).show()
             }
         }
-//        requestPermissionsResult(
-//            faceNetModel,
-//            cameraExecutor,
-//            requestCode,
-//            binding.previewView
-//        )
     }
 
     private fun allPermissionsGranted() = Camera.REQUIRED_PERMISSIONS.all {
@@ -134,98 +123,11 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
             findNavController().popBackStack()
         }
         binding.actionButton.setOnClickListener {
-//            viewModel.currentFace.value?.let {
-//                viewModel.saveFaceToDatabase(
-//                    FaceEntity(
-//                        faceImage = faceNetModel.getFaceEmbedding(it)
-//                    )
-//                ).subscribeOn(Schedulers.io()).subscribe()
-//                Toast.makeText(requireContext(), "Лицо успешно сохранено", Toast.LENGTH_LONG).show()
-//            } ?: Toast.makeText(requireContext(), "Лицо не распознано", Toast.LENGTH_LONG).show()
             if (camera?.currentFaces?.isNotEmpty() == true) {
                 val face = camera?.currentFaces?.get(0)
-
-//                val editText = EditText(requireContext())
-//                val saveFaceAlertBuilder: AlertDialog.Builder = AlertDialog.Builder(
-//                    ContextThemeWrapper(
-//                        requireContext(),
-//                        R.style.AlertDialogCustom
-//                    )
-//                )
-//                    .setTitle("Сохранение лица")
-//                    .setView(editText)
-//                    .setPositiveButton("Сохранить", null)
-//                    .setNegativeButton("Отмена") { dialog, _ ->
-//                        dialog.cancel()
-//                    }
-//                val saveFaceAlertDialog = saveFaceAlertBuilder.create()
-//                saveFaceAlertDialog.show()
-//
-//                saveFaceAlertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-//                    if (editText.text.toString().isNotBlank()) {
-//                        face?.let {
-//                            viewModel.saveFaceToDatabase(
-//                                FaceEntity(
-//                                    name = editText.toString(),
-//                                    imageData = faceNetModel.getFaceEmbedding(it)
-//                                )
-//                            ).subscribeOn(Schedulers.io()).subscribe()
-//                            Toast.makeText(requireContext(), "Лицо успешно сохранено", Toast.LENGTH_LONG)
-//                                .show()
-//                        }
-//                        saveFaceAlertDialog.cancel()
-//                        findNavController().popBackStack()
-//                    } else {
-//                        editText.error = "Поле не может быть пустым"
-//                    }
-//                }
-
-                // ---------------------------------------------------------
-
-//                val saveFaceAlertDialog = AlertDialog.Builder(requireContext()).create()
-//                val saveFaceAlertDialogLayout = LayoutInflater.from(requireContext())
-//                    .inflate(R.layout.custom_alert_dialog, null)
-//                saveFaceAlertDialog.apply {
-//                    setView(saveFaceAlertDialogLayout)
-//                    setCancelable(false)
-//                }
-//                saveFaceAlertDialogLayout.let { layout ->
-//                    val editText = layout.findViewById<EditText>(R.id.editText)
-//                    layout.findViewById<TextView>(R.id.title).text = "Сохранение лица"
-//                    layout.findViewById<TextView>(R.id.negativeButton).apply {
-//                        text = "Отмена"
-//                        setOnClickListener { saveFaceAlertDialog.cancel() }
-//                    }
-//                    layout.findViewById<TextView>(R.id.positiveButton).apply {
-//                        text = "Сохранить"
-//                        setOnClickListener {
-//                            if (editText.text.toString().isNotBlank()) {
-//                                face?.let {
-//                                    viewModel.saveFaceToDatabase(
-//                                        FaceEntity(
-//                                            name = editText.text.toString(),
-//                                            imageData = faceNetModel.getFaceEmbedding(it)
-//                                        )
-//                                    ).subscribeOn(Schedulers.io()).subscribe()
-//                                    Toast.makeText(
-//                                        requireContext(),
-//                                        "Лицо успешно сохранено",
-//                                        Toast.LENGTH_LONG
-//                                    ).show()
-//                                }
-//                                saveFaceAlertDialog.cancel()
-//                                binding.root.findNavController().popBackStack()
-//                            } else {
-//                                editText.error = "Поле не может быть пустым"
-//                            }
-//                        }
-//                    }
-//                }
-//                saveFaceAlertDialog.show()
-
-                // ---------------------------------------------------------
                 val alert = LayoutInflater.from(requireContext())
                     .inflate(R.layout.custom_alert_dialog, null, false) as CustomAlertDialog
+
                 alert.showDialog(
                     getString(R.string.saving_face),
                     getString(R.string.cancel),
@@ -260,15 +162,6 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
                 ).show()
             }
         }
-    }
-
-    private fun setObservers() {
-//        viewModel.overlayRectList.observe(viewLifecycleOwner) {
-//            binding.faceContourOverlay.drawFaceContour(it)
-//        }
-//        viewModel.currentFace.observe(viewLifecycleOwner) {
-//            binding.faceImage.setImageBitmap(it)
-//        }
     }
 
     override fun drawOverlay(faceBounds: List<RectF>) {

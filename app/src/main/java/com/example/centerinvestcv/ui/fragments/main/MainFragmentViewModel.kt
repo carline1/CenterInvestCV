@@ -8,13 +8,6 @@ import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
 class MainFragmentViewModel(private val roomFaceRepository: RoomFaceRepository) : ViewModel() {
 
-//    @Inject
-//    lateinit var roomFaceRepository: RoomFaceRepository
-
-    init {
-//        application.appComponent.inject(this)
-    }
-
     fun loadAllFaceEntities(): Single<List<FaceEntity>> {
         return roomFaceRepository.loadAllFaceEntities()
     }
