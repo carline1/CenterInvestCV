@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.centerinvestcv.R
 import com.example.centerinvestcv.databinding.FaceAddViewHolderBinding
 import com.example.centerinvestcv.databinding.FaceItemViewHolderBinding
-import com.example.centerinvestcv.db.dao.FaceEntity
+import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
-class FaceManagerAdapter :
-    ListAdapter<FaceManagerAdapter.FaceViewHolderModel, FaceManagerAdapter.BaseViewHolder>(
-        DiffCallback()
-    ) {
+class FaceManagerAdapter(
+    private val actions: Actions
+) : ListAdapter<FaceManagerAdapter.FaceViewHolderModel, FaceManagerAdapter.BaseViewHolder>(
+    DiffCallback()
+) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -27,7 +28,8 @@ class FaceManagerAdapter :
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                )
+                ),
+                actions
             )
             ViewHolderType.ADD -> BaseViewHolder.FaceAddViewHolder(
                 FaceAddViewHolderBinding.inflate(
@@ -55,16 +57,16 @@ class FaceManagerAdapter :
     sealed class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         abstract fun bind(model: FaceViewHolderModel)
 
-        class FaceItemViewHolder(private val binding: FaceItemViewHolderBinding) :
-            BaseViewHolder(binding.root) {
+        class FaceItemViewHolder(
+            private val binding: FaceItemViewHolderBinding,
+            private val actions: Actions
+        ) : BaseViewHolder(binding.root) {
             override fun bind(model: FaceViewHolderModel) {
                 model as FaceViewHolderModel.FaceItem
-                binding.faceName.text = model.face.name
-                binding.delete.setOnClickListener {
-                    model.deleteCallback()
-                }
-                binding.edit.setOnClickListener {
-                    model.editCallback()
+                binding.apply {
+                    faceName.text = model.face.name
+                    edit.setOnClickListener { actions.editFaceName(model.face.id) }
+                    delete.setOnClickListener { actions.deleteFace(model.face.id) }
                 }
             }
         }
@@ -82,11 +84,7 @@ class FaceManagerAdapter :
     }
 
     sealed class FaceViewHolderModel {
-        data class FaceItem(
-            val face: FaceEntity,
-            val deleteCallback: () -> Unit,
-            val editCallback: () -> Unit
-        ) : FaceViewHolderModel()
+        data class FaceItem(val face: FaceEntity) : FaceViewHolderModel()
 
         object AddItem : FaceViewHolderModel()
     }
@@ -114,7 +112,12 @@ class FaceManagerAdapter :
                         && oldItem.face.imageData.contentEquals(newItem.face.imageData)
             } else oldItem is FaceViewHolderModel.AddItem && newItem is FaceViewHolderModel.AddItem
 
+    }
 
+    interface Actions {
+        fun editFaceName(id: Int)
+
+        fun deleteFace(id: Int)
     }
 
 }

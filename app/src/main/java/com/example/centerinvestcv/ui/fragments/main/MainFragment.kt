@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.centerinvestcv.databinding.MainFragmentBinding
 import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.centerinvest.hidingpersonaldata.di.RoomFaceComponentViewModel
 import ru.centerinvest.hidingpersonaldata.ml.model.FaceNetModel
 import ru.centerinvest.hidingpersonaldata.ml.model.TensorflowModels
 import ru.centerinvest.hidingpersonaldata.utils.Camera
@@ -24,7 +25,11 @@ class MainFragment : Fragment(), Camera.CameraListener {
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: MainFragmentViewModel by viewModels()
+    //    private val viewModel: MainFragmentViewModel by viewModels()
+    private val roomFaceViewModel: RoomFaceComponentViewModel by viewModels()
+    private val viewModel: MainFragmentViewModel by viewModels() {
+        MainFragmentViewModel.Factory(roomFaceViewModel.roomFaceComponent.roomFaceRepository)
+    }
 
     private lateinit var faceNetModel: FaceNetModel
     private val lensFacing = CameraSelector.LENS_FACING_FRONT

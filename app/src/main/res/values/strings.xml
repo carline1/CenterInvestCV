@@ -6,4 +6,14 @@
     <string name="center_invest">Центр-инвест</string>
     <string name="more">Еще</string>
     <string name="main_screen">Главная</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="change_face_name">Изменение названия лица</string>
+    <string name="face_name_has_been_changed">Название лица изменено</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="field_cannot_be_empty">Поле не может быть пустым</string>
+    <string name="saving_face">Сохранение лица</string>
+    <string name="face_saved_successfully">Лицо успешно сохранено</string>
+    <string name="face_not_recognized">Лицо не распознано</string>
+    <string name="permission_was_not_granted">Разрешение не было предоставлено пользователем</string>
 </resources>

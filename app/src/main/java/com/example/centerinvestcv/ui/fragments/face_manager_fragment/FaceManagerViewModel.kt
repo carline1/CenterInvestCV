@@ -1,21 +1,19 @@
 package com.example.centerinvestcv.ui.fragments.face_manager_fragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.example.centerinvestcv.db.RoomFaceRepository
-import com.example.centerinvestcv.db.dao.FaceEntity
-import com.example.centerinvestcv.di.appComponent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import javax.inject.Inject
+import ru.centerinvest.hidingpersonaldata.db.RoomFaceRepository
+import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
-class FaceManagerViewModel(application: Application) : AndroidViewModel(application) {
+class FaceManagerViewModel(private val roomFaceRepository: RoomFaceRepository) : ViewModel() {
 
-    @Inject
-    lateinit var roomFaceRepository: RoomFaceRepository
+//    @Inject
+//    lateinit var roomFaceRepository: RoomFaceRepository
 
     init {
-        application.appComponent.inject(this)
+//        application.appComponent.inject(this)
     }
 
     fun loadAllFaceEntities(): Single<List<FaceEntity>> {
@@ -28,5 +26,12 @@ class FaceManagerViewModel(application: Application) : AndroidViewModel(applicat
 
     fun editFaceEntity(id: Int, newName: String): Completable =
         roomFaceRepository.editFaceEntity(id, newName)
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val roomFaceRepository: RoomFaceRepository): ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return FaceManagerViewModel(roomFaceRepository) as T
+        }
+    }
 
 }

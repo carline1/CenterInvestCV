@@ -16,16 +16,10 @@ interface FaceDao {
     @Query("SELECT * FROM ${FaceEntity.TABLE_NAME}")
     fun loadAllFaceEntities(): Single<List<FaceEntity>>
 
-//    @Query("SELECT * FROM ${FaceEntity.TABLE_NAME}")
-//    fun loadAllFavouriteEntities(): Single<List<FaceEntity>>
-//
-//    @Insert(entity = FaceEntity::class, onConflict = OnConflictStrategy.REPLACE)
-//    fun insertFavourite(faceEntity: FaceEntity): Completable
-//
-//    @Insert(entity = FaceEntity::class, onConflict = OnConflictStrategy.REPLACE)
-//    fun insertAll(faceEntityList: List<FaceEntity>): Completable
-//
-//    @Query("DELETE FROM ${FaceEntity.TABLE_NAME} WHERE favouriteId like :favouriteId")
-//    fun deleteFavourite(favouriteId: String): Completable
+    @Query("DELETE FROM ${FaceEntity.TABLE_NAME} WHERE id like :id")
+    fun deleteFaceEntity(id: Int): Completable
+
+    @Query("UPDATE ${FaceEntity.TABLE_NAME} SET name = :newName WHERE id = :id")
+    fun editFaceEntity(id: Int, newName: String): Completable
 
 }

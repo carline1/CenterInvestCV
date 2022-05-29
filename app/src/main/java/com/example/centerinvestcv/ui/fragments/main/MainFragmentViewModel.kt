@@ -1,24 +1,29 @@
 package com.example.centerinvestcv.ui.fragments.main
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import com.example.centerinvestcv.di.appComponent
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.rxjava3.core.Single
-import com.example.centerinvestcv.db.RoomFaceRepository
-import com.example.centerinvestcv.db.dao.FaceEntity
-import javax.inject.Inject
+import ru.centerinvest.hidingpersonaldata.db.RoomFaceRepository
+import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
-class MainFragmentViewModel(application: Application) : AndroidViewModel(application) {
+class MainFragmentViewModel(private val roomFaceRepository: RoomFaceRepository) : ViewModel() {
 
-    @Inject
-    lateinit var roomFaceRepository: RoomFaceRepository
+//    @Inject
+//    lateinit var roomFaceRepository: RoomFaceRepository
 
     init {
-        application.appComponent.inject(this)
+//        application.appComponent.inject(this)
     }
 
     fun loadAllFaceEntities(): Single<List<FaceEntity>> {
         return roomFaceRepository.loadAllFaceEntities()
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    class Factory(private val roomFaceRepository: RoomFaceRepository): ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return MainFragmentViewModel(roomFaceRepository) as T
+        }
     }
 
 }

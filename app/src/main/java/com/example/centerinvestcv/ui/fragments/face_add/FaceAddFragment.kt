@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,8 +19,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.centerinvestcv.R
 import com.example.centerinvestcv.databinding.FaceAddFragmentBinding
-import com.example.centerinvestcv.db.dao.FaceEntity
+import com.example.centerinvestcv.ui.common.views.CustomAlertDialog
 import io.reactivex.rxjava3.schedulers.Schedulers
+import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
+import ru.centerinvest.hidingpersonaldata.di.RoomFaceComponentViewModel
 import ru.centerinvest.hidingpersonaldata.ml.model.FaceNetModel
 import ru.centerinvest.hidingpersonaldata.ml.model.TensorflowModels
 import ru.centerinvest.hidingpersonaldata.utils.Camera
@@ -34,7 +33,10 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
     private var _binding: FaceAddFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FaceAddViewModel by viewModels()
+    private val roomFaceViewModel: RoomFaceComponentViewModel by viewModels()
+    private val viewModel: FaceAddViewModel by viewModels() {
+        FaceAddViewModel.Factory(roomFaceViewModel.roomFaceComponent.roomFaceRepository)
+    }
 
     private lateinit var faceNetModel: FaceNetModel
     private val lensFacing = CameraSelector.LENS_FACING_FRONT
@@ -110,7 +112,7 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
             } else {
                 Toast.makeText(
                     context,
-                    "Разрешение не было предоставлено пользователем",
+                    getString(R.string.permission_was_not_granted),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -177,49 +179,85 @@ class FaceAddFragment : Fragment(), Camera.CameraListener {
 //                        editText.error = "Поле не может быть пустым"
 //                    }
 //                }
-                val saveFaceAlertDialog = AlertDialog.Builder(requireContext()).create()
-                val saveFaceAlertDialogLayout = LayoutInflater.from(requireContext())
-                    .inflate(R.layout.custom_alert_dialog, null)
-                saveFaceAlertDialog.apply {
-                    setView(saveFaceAlertDialogLayout)
-                    setCancelable(false)
-                }
-                saveFaceAlertDialogLayout.let { layout ->
-                    val editText = layout.findViewById<EditText>(R.id.editText)
-                    layout.findViewById<TextView>(R.id.title).text = "Сохранение лица"
-                    layout.findViewById<TextView>(R.id.negativeButton).apply {
-                        text = "Отмена"
-                        setOnClickListener { saveFaceAlertDialog.cancel() }
-                    }
-                    layout.findViewById<TextView>(R.id.positiveButton).apply {
-                        text = "Сохранить"
-                        setOnClickListener {
-                            if (editText.text.toString().isNotBlank()) {
-                                face?.let {
-                                    viewModel.saveFaceToDatabase(
-                                        FaceEntity(
-                                            name = editText.text.toString(),
-                                            imageData = faceNetModel.getFaceEmbedding(it)
-                                        )
-                                    ).subscribeOn(Schedulers.io()).subscribe()
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Лицо успешно сохранено",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                                saveFaceAlertDialog.cancel()
-                                binding.root.findNavController().popBackStack()
-                            } else {
-                                editText.error = "Поле не может быть пустым"
-                            }
-                        }
-                    }
-                }
-                saveFaceAlertDialog.show()
 
+                // ---------------------------------------------------------
+
+//                val saveFaceAlertDialog = AlertDialog.Builder(requireContext()).create()
+//                val saveFaceAlertDialogLayout = LayoutInflater.from(requireContext())
+//                    .inflate(R.layout.custom_alert_dialog, null)
+//                saveFaceAlertDialog.apply {
+//                    setView(saveFaceAlertDialogLayout)
+//                    setCancelable(false)
+//                }
+//                saveFaceAlertDialogLayout.let { layout ->
+//                    val editText = layout.findViewById<EditText>(R.id.editText)
+//                    layout.findViewById<TextView>(R.id.title).text = "Сохранение лица"
+//                    layout.findViewById<TextView>(R.id.negativeButton).apply {
+//                        text = "Отмена"
+//                        setOnClickListener { saveFaceAlertDialog.cancel() }
+//                    }
+//                    layout.findViewById<TextView>(R.id.positiveButton).apply {
+//                        text = "Сохранить"
+//                        setOnClickListener {
+//                            if (editText.text.toString().isNotBlank()) {
+//                                face?.let {
+//                                    viewModel.saveFaceToDatabase(
+//                                        FaceEntity(
+//                                            name = editText.text.toString(),
+//                                            imageData = faceNetModel.getFaceEmbedding(it)
+//                                        )
+//                                    ).subscribeOn(Schedulers.io()).subscribe()
+//                                    Toast.makeText(
+//                                        requireContext(),
+//                                        "Лицо успешно сохранено",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//                                saveFaceAlertDialog.cancel()
+//                                binding.root.findNavController().popBackStack()
+//                            } else {
+//                                editText.error = "Поле не может быть пустым"
+//                            }
+//                        }
+//                    }
+//                }
+//                saveFaceAlertDialog.show()
+
+                // ---------------------------------------------------------
+                val alert = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.custom_alert_dialog, null, false) as CustomAlertDialog
+                alert.showDialog(
+                    getString(R.string.saving_face),
+                    getString(R.string.cancel),
+                    getString(R.string.save),
+                    { cancel() },
+                ) {
+                    if (alert.editText?.text.toString().isNotBlank()) {
+                        face?.let {
+                            viewModel.saveFaceToDatabase(
+                                FaceEntity(
+                                    name = alert.editText?.text.toString(),
+                                    imageData = faceNetModel.getFaceEmbedding(it)
+                                )
+                            ).subscribeOn(Schedulers.io()).subscribe()
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.face_saved_successfully),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        cancel()
+                        binding.root.findNavController().popBackStack()
+                    } else {
+                        alert.editText?.error = getString(R.string.field_cannot_be_empty)
+                    }
+                }
             } else {
-                Toast.makeText(requireContext(), "Лицо не распознано", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.face_not_recognized),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
