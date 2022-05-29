@@ -3,6 +3,7 @@ package com.example.centerinvestcv.ui.fragments.face_manager_fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.centerinvestcv.R
 import com.example.centerinvestcv.databinding.FaceAddViewHolderBinding
 import com.example.centerinvestcv.databinding.FaceItemViewHolderBinding
+import com.example.centerinvestcv.utils.SharedPreferenceUtil.isHideDataEnabled
 import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
 class FaceManagerAdapter(
@@ -63,10 +65,15 @@ class FaceManagerAdapter(
         ) : BaseViewHolder(binding.root) {
             override fun bind(model: FaceViewHolderModel) {
                 model as FaceViewHolderModel.FaceItem
-                binding.apply {
-                    faceName.text = model.face.name
-                    edit.setOnClickListener { actions.editFaceName(model.face.id) }
-                    delete.setOnClickListener { actions.deleteFace(model.face.id) }
+                if (binding.root.context.isHideDataEnabled) {
+                    binding.apply {
+                        root.isVisible = true
+                        faceName.text = model.face.name
+                        edit.setOnClickListener { actions.editFaceName(model.face.id) }
+                        delete.setOnClickListener { actions.deleteFace(model.face.id) }
+                    }
+                } else {
+                    binding.root.isVisible = false
                 }
             }
         }
@@ -74,9 +81,16 @@ class FaceManagerAdapter(
         class FaceAddViewHolder(private val binding: FaceAddViewHolderBinding) :
             BaseViewHolder(binding.root) {
             override fun bind(model: FaceViewHolderModel) {
-                binding.root.setOnClickListener {
-                    it.findNavController()
-                        .navigate(R.id.action_faceManagerFragment_to_faceAddFragment)
+                if (binding.root.context.isHideDataEnabled) {
+                    binding.root.apply {
+                        isVisible = true
+                        binding.root.setOnClickListener {
+                            it.findNavController()
+                                .navigate(R.id.action_faceManagerFragment_to_faceAddFragment)
+                        }
+                    }
+                } else {
+                    binding.root.isVisible = false
                 }
             }
         }
