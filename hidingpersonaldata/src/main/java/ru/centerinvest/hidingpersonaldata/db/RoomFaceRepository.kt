@@ -7,7 +7,7 @@ import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
 class RoomFaceRepository(private val faceDao: FaceDao) {
 
-    fun insertFavourite(faceEntity: FaceEntity): Completable =
+    fun addFaceEntity(faceEntity: FaceEntity): Completable =
         faceDao.insertFace(faceEntity)
 
     fun loadAllFaceEntities(): Single<List<FaceEntity>> =

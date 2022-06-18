@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">CenterInvestCV</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="save_face">Сохранить лицо</string>
     <string name="center_invest">Центр-инвест</string>
     <string name="more">Еще</string>
@@ -16,4 +14,33 @@
     <string name="face_saved_successfully">Лицо успешно сохранено</string>
     <string name="face_not_recognized">Лицо не распознано</string>
     <string name="permission_was_not_granted">Разрешение не было предоставлено пользователем</string>
+    <string name="faces_not_loading">При подгрузке лиц из базы данных произошла ошибка</string>
+    <string name="adding_face">Добавление лица</string>
+    <string name="application_settings">Настройки приложения</string>
+    <string name="security">Безопасность</string>
+    <string name="about_the_application">О приложении</string>
+    <string name="branches_and_atms">Отделения и банкоматы</string>
+    <string name="change_login_code">Изменить код входа</string>
+    <string name="change_login">Изменить логин</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="enable_data_hiding">Включить скрытие данных</string>
+    <string name="add_face">+ Добавить лицо</string>
+    <string name="hiding_data">Скрытие данных</string>
+    <string name="person_name">Владислав Кисляков</string>
+    <string name="person_phone">+7 (123) 456–78–90</string>
+    <string name="paymentTitle1">За квартиру</string>
+    <string name="paymentAmount1">2 300 ₽</string>
+    <string name="paymentTitle2">Цветы</string>
+    <string name="paymentAmount2">1 600 ₽</string>
+    <string name="paymentTitle3">Заправка</string>
+    <string name="paymentAmount3">5 100 ₽</string>
+    <string name="accountsTitle">Счета</string>
+    <string name="accountTitle1">Карточный счет 1</string>
+    <string name="accountDesc1">Нет привязанных карт. Действия ограничены</string>
+    <string name="accountCardNumber1">•• 5485</string>
+    <string name="accountAmount1">110 000 ₽</string>
+    <string name="accountTitle2">Карточный счет 2</string>
+    <string name="accountDesc2">Нет привязанных карт. Действия ограничены</string>
+    <string name="accountAmount2">110 000 ₽</string>
+    <string name="accountCardNumber2">•• 5485</string>
 </resources>

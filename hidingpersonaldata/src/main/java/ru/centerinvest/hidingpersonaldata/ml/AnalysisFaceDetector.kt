@@ -10,8 +10,6 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
 import ru.centerinvest.hidingpersonaldata.utils.BitmapUtils
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 
 class AnalysisFaceDetector(
@@ -49,43 +47,19 @@ class AnalysisFaceDetector(
                 val width = if (reverseDimens) imageProxy.height else imageProxy.width
                 val height = if (reverseDimens) imageProxy.width else imageProxy.height
 
-//                val faceBounds = faces.map { it.boundingBox.transform(width, height) }
                 val faceBounds = faces.map { it.boundingBox.transform(width, height) }
-//                val frameRotatedBitmap = BitmapUtils.rotateBitmap(
-//                    imageBitmap,
-//                    rotation.toFloat()
-//                )
                 val faceBitmaps =
                     faces.map { BitmapUtils.cropRectFromBitmap(imageBitmap, it.boundingBox) }
-//                val faceBitmaps = emptyList<Bitmap>()
                 listener.onFacesDetected(faceBounds, faceBitmaps)
                 imageProxy.close()
-//                processFaceContourDetectionResult(faces)
             }
             .addOnFailureListener { e ->
-                // Task failed with an exception
                 e.printStackTrace()
                 imageProxy.close()
             }
-//        }
-    }
-
-    // Compute the L2 norm of ( x2 - x1 )
-    private fun L2Norm(x1: FloatArray, x2: FloatArray): Float {
-        return sqrt(x1.mapIndexed { i, xi -> (xi - x2[i]).pow(2) }.sum())
-    }
-
-    // Compute the cosine of the angle between x1 and x2.
-    private fun cosineSimilarity(x1: FloatArray, x2: FloatArray): Float {
-        val mag1 = sqrt(x1.map { it * it }.sum())
-        val mag2 = sqrt(x2.map { it * it }.sum())
-        val dot = x1.mapIndexed { i, xi -> xi * x2[i] }.sum()
-        return dot / (mag1 * mag2)
     }
 
     private fun Rect.transform(width: Int, height: Int): RectF {
-//        val scaleX = previewWidth / width.toFloat()
-//        val scaleY = previewHeight / height.toFloat()
         val scaleX = previewWidth / width
         val scaleY = previewHeight / height
 
@@ -101,7 +75,5 @@ class AnalysisFaceDetector(
 
     interface DetectListener {
         fun onFacesDetected(faceBounds: List<RectF>, faces: List<Bitmap>)
-
-//        fun onError(exception: Exception)
     }
 }

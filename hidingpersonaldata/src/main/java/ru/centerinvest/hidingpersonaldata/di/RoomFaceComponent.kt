@@ -8,9 +8,7 @@ import javax.inject.Scope
 
 @[FaceFeature Component(modules = [RoomModule::class])]
 interface RoomFaceComponent {
-
     val roomFaceRepository: RoomFaceRepository
-
 }
 
 class RoomFaceComponentViewModel(application: Application) : AndroidViewModel(application) {

@@ -23,6 +23,13 @@ object BitmapUtils {
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, false)
     }
 
+    private fun flipBitmap(source: Bitmap): Bitmap {
+        val matrix = Matrix()
+        matrix.postScale(-1f, 1f, source.width / 2f, source.height / 2f)
+
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
     fun imageToBitmap(image: Image, rotationDegrees: Int): Bitmap {
         val yBuffer = image.planes[0].buffer
         val uBuffer = image.planes[1].buffer
@@ -40,13 +47,8 @@ object BitmapUtils {
         val yuv = out.toByteArray()
         var output = BitmapFactory.decodeByteArray(yuv, 0, yuv.size)
         output = rotateBitmap(output, rotationDegrees.toFloat())
-        return flipBitmap(output)
-    }
 
-    fun flipBitmap(source: Bitmap): Bitmap {
-        val matrix = Matrix()
-        matrix.postScale(-1f, 1f, source.width / 2f, source.height / 2f)
-        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+        return flipBitmap(output)
     }
 
 }

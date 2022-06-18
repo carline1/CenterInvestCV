@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.centerinvestcv.R
 import com.example.centerinvestcv.databinding.SecurityFragmentBinding
+import com.example.centerinvestcv.utils.FullScreenStateChanger
 
 class SecurityFragment : Fragment() {
 
@@ -28,14 +30,23 @@ class SecurityFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            back.setOnClickListener {
+            backButton.setOnClickListener {
                 findNavController().popBackStack()
             }
             hidingData.setOnClickListener {
                 findNavController().navigate(R.id.action_securityFragment_to_faceManagerFragment)
             }
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        FullScreenStateChanger.fullScreen(activity as AppCompatActivity, true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        FullScreenStateChanger.fullScreen(activity as AppCompatActivity, false)
     }
 
     override fun onDestroy() {

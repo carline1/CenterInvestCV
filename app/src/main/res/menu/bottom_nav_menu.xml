@@ -9,5 +9,5 @@
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_more"
         android:title="@string/more"
-        android:color = "@color/gray"/>
+        android:color = "@color/light_gray"/>
 </menu>

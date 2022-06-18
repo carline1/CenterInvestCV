@@ -2,8 +2,6 @@ package ru.centerinvest.hidingpersonaldata.ml
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.Rect
-import android.graphics.RectF
 import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -22,13 +20,9 @@ import kotlin.math.sqrt
 
 
 class AnalysisFaceRecognizer(
-    private val previewWidth: Float,
-    private val previewHeight: Float,
-    private val isFrontLens: Boolean,
     private var model: FaceNetModel
 ) : ImageAnalysis.Analyzer {
 
-//    var detectListener: AnalysisFaceDetector.DetectListener? = null
     var recognizeListener: RecognizeListener? = null
 
     var faceList = ArrayList<Pair<String, FloatArray>>()
@@ -57,35 +51,16 @@ class AnalysisFaceRecognizer(
         val detector = FaceDetection.getClient(realTimeOpts)
         detector.process(image)
             .addOnSuccessListener { faces ->
-//                val detectListener = detectListener ?: return@addOnSuccessListener
-                val reverseDimens = rotation == 90 || rotation == 270
-                val width = if (reverseDimens) imageProxy.height else imageProxy.width
-                val height = if (reverseDimens) imageProxy.width else imageProxy.height
-
-//                val faceBounds = faces.map { it.boundingBox.transform(width, height) }
-                val faceBounds = faces.map { it.boundingBox.transform(width, height) }
-//                val frameRotatedBitmap = BitmapUtils.rotateBitmap(
-//                    imageBitmap,
-//                    rotation.toFloat()
-//                )
-                val faceBitmaps =
-                    faces.map { BitmapUtils.cropRectFromBitmap(imageBitmap, it.boundingBox) }
-//                val faceBitmaps = emptyList<Bitmap>()
-//                detectListener.onFacesDetected(faceBounds, faceBitmaps)
-
                 CoroutineScope(Dispatchers.Unconfined).launch {
                     runModel(faces, imageBitmap)
                 }
 
                 imageProxy.close()
-//                processFaceContourDetectionResult(faces)
             }
             .addOnFailureListener { e ->
-                // Task failed with an exception
                 e.printStackTrace()
                 imageProxy.close()
             }
-//        }
     }
 
     private suspend fun runModel(faces: List<Face>, cameraFrameBitmap: Bitmap) {
@@ -98,42 +73,45 @@ class AnalysisFaceRecognizer(
                     // Finally, feed the ByteBuffer to the FaceNet model.
                     val croppedBitmap =
                         BitmapUtils.cropRectFromBitmap(cameraFrameBitmap, face.boundingBox)
-                    val subject = model.getFaceEmbedding(croppedBitmap)
-
+                    val currentFaceEmbedding = model.getFaceEmbedding(croppedBitmap)
 
                     // Perform clustering ( grouping )
                     // Store the clusters in a HashMap. Here, the key would represent the 'name'
                     // of that cluster and ArrayList<Float> would represent the collection of all
                     // L2 norms/ cosine distances.
-                    for (i in 0 until faceList.size) {
-                        // If this cluster ( i.e an ArrayList with a specific key ) does not exist,
-                        // initialize a new one.
-                        if (nameScoreHashmap[faceList[i].first] == null) {
-                            // Compute the L2 norm and then append it to the ArrayList.
-                            val p = ArrayList<Float>()
-                            if (metricToBeUsed == "cosine") {
-                                p.add(cosineSimilarity(subject, faceList[i].second))
-                            } else {
-                                p.add(L2Norm(subject, faceList[i].second))
+                    if (faceList.isEmpty()) {
+                        unidentifiedPersons = 1
+                    } else {
+                        for (i in 0 until faceList.size) {
+                            // If this cluster ( i.e an ArrayList with a specific key ) does not exist,
+                            // initialize a new one.
+                            if (nameScoreHashmap[faceList[i].first] == null) {
+                                // Compute the L2 norm and then append it to the ArrayList.
+                                val currentFaceScore = ArrayList<Float>()
+                                if (metricToBeUsed == "cosine") {
+                                    currentFaceScore.add(cosineSimilarity(currentFaceEmbedding, faceList[i].second))
+                                } else {
+                                    currentFaceScore.add(L2Norm(currentFaceEmbedding, faceList[i].second))
+                                }
+                                nameScoreHashmap[faceList[i].first] = currentFaceScore
                             }
-                            nameScoreHashmap[faceList[i].first] = p
-                        }
-                        // If this cluster exists, append the L2 norm/cosine score to it.
-                        else {
-                            if (metricToBeUsed == "cosine") {
-                                nameScoreHashmap[faceList[i].first]?.add(
-                                    cosineSimilarity(
-                                        subject,
-                                        faceList[i].second
+                            // If this cluster exists, append the L2 norm/cosine score to it.
+                            else {
+                                if (metricToBeUsed == "cosine") {
+                                    nameScoreHashmap[faceList[i].first]?.add(
+                                        cosineSimilarity(
+                                            currentFaceEmbedding,
+                                            faceList[i].second
+                                        )
                                     )
-                                )
-                            } else {
-                                nameScoreHashmap[faceList[i].first]?.add(
-                                    L2Norm(
-                                        subject,
-                                        faceList[i].second
+                                } else {
+                                    nameScoreHashmap[faceList[i].first]?.add(
+                                        L2Norm(
+                                            currentFaceEmbedding,
+                                            faceList[i].second
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
                     }
@@ -168,12 +146,6 @@ class AnalysisFaceRecognizer(
                         }
                     }
                     Log.d("TAG", "Person identified as $bestScoreUserName")
-//                    predictions.add(
-//                        Prediction(
-//                            face.boundingBox,
-//                            bestScoreUserName
-//                        )
-//                    )
                 } catch (e: Exception) {
                     // If any exception occurs with this box and continue with the next boxes.
                     Log.e("TAG", "Exception in FrameAnalyser : ${e.localizedMessage}")
@@ -185,11 +157,6 @@ class AnalysisFaceRecognizer(
             } else {
                 recognizeListener?.onUnidentifiedPersonFinded(true)
             }
-//            withContext(Dispatchers.Main) {
-//                // Clear the BoundingBoxOverlay and set the new results ( boxes ) to be displayed.
-//                boundingBoxOverlay.faceBoundingBoxes = predictions
-//                boundingBoxOverlay.invalidate()
-//            }
         }
     }
 
@@ -206,27 +173,8 @@ class AnalysisFaceRecognizer(
         return dot / (mag1 * mag2)
     }
 
-    private fun Rect.transform(width: Int, height: Int): RectF {
-//        val scaleX = previewWidth / width.toFloat()
-//        val scaleY = previewHeight / height.toFloat()
-        val scaleX = previewWidth / width
-        val scaleY = previewHeight / height
-
-        val flippedLeft = if (isFrontLens) width - right else left
-        val flippedRight = if (isFrontLens) width - left else right
-
-        val scaledLeft = scaleX * flippedLeft
-        val scaledTop = scaleY * top
-        val scaledRight = scaleX * flippedRight
-        val scaledBottom = scaleY * bottom
-        return RectF(scaledLeft, scaledTop, scaledRight, scaledBottom)
-    }
-
     interface RecognizeListener {
-//        fun onFacesDetected(faceBounds: List<RectF>, faces: List<Bitmap>)
-
         fun onUnidentifiedPersonFinded(isUnidentifiedPersonFind: Boolean)
     }
-
 
 }

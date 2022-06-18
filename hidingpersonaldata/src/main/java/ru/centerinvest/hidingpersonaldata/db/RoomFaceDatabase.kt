@@ -13,6 +13,5 @@ import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 )
 @TypeConverters(Converters::class)
 abstract class RoomFaceDatabase : RoomDatabase() {
-
     abstract fun faceDao(): FaceDao
 }

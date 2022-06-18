@@ -40,7 +40,6 @@ class TensorflowModels {
             160
         )
 
-
     }
 
 }

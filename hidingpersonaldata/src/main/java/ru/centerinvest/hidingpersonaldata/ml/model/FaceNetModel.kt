@@ -19,7 +19,6 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-// Utility class for FaceNet model
 class FaceNetModel(
     context: Context,
     var model: ModelInfo,
@@ -27,10 +26,8 @@ class FaceNetModel(
     useXNNPack: Boolean
 ) {
 
-    // Input image size for FaceNet model.
     private val imgSize = model.inputDims
 
-    // Output embedding size
     private val embeddingDim = model.outputDims
 
     private var interpreter: Interpreter
@@ -40,33 +37,24 @@ class FaceNetModel(
         .build()
 
     init {
-        // Initialize TFLiteInterpreter
         val interpreterOptions = Interpreter.Options().apply {
-            // Add the GPU Delegate if supported.
-            // See -> https://www.tensorflow.org/lite/performance/gpu#android
             if (CompatibilityList().isDelegateSupportedOnThisDevice) {
                 if (useGpu) {
                     addDelegate(GpuDelegate(CompatibilityList().bestOptionsForThisDevice))
                 }
             } else {
-                // Number of threads for computation
                 setNumThreads(4)
             }
             setUseXNNPACK(useXNNPack)
         }
         interpreter =
             Interpreter(FileUtil.loadMappedFile(context, model.assetsFilename), interpreterOptions)
-//        Logger.log("Using ${model.name} model.")
     }
 
-
-    // Gets an face embedding using FaceNet.
     fun getFaceEmbedding(image: Bitmap): FloatArray {
         return runFaceNet(convertBitmapToBuffer(image))[0]
     }
 
-
-    // Run the FaceNet model.
     private fun runFaceNet(inputs: Any): Array<FloatArray> {
         val t1 = System.currentTimeMillis()
         val faceNetModelOutputs = Array(1) { FloatArray(embeddingDim) }
@@ -78,8 +66,6 @@ class FaceNetModel(
         return faceNetModelOutputs
     }
 
-
-    // Resize the given bitmap and convert it to a ByteBuffer
     private fun convertBitmapToBuffer(image: Bitmap): ByteBuffer {
         return imageTensorProcessor.process(TensorImage.fromBitmap(image)).buffer
     }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray"
+    android:background="@color/light_gray"
     tools:context=".ui.fragments.main.MainFragment">
 
     <androidx.camera.view.PreviewView
@@ -21,7 +21,7 @@
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/gray"
+        android:background="@color/light_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,17 +54,18 @@
             android:layout_marginStart="15dp"
             android:background="@android:color/transparent"
             android:padding="10dp"
-            android:src="@drawable/ic_search" />
+            android:src="@drawable/ic_search"
+            tools:ignore="contentDescription" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/center_invest"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <ImageButton
@@ -75,14 +76,15 @@
             android:layout_marginEnd="15dp"
             android:background="@android:color/transparent"
             android:padding="10dp"
-            android:src="@drawable/ic_notification" />
+            android:src="@drawable/ic_notification"
+            tools:ignore="contentDescription" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/transaction1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/payment1"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:baselineAligned="false"
         android:orientation="horizontal"
@@ -91,12 +93,18 @@
         app:layout_constraintTop_toBottomOf="@id/tabBar">
 
         <ImageView
+            android:id="@+id/paymentIcon1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginVertical="7dp"
             android:layout_marginStart="15dp"
             android:padding="10dp"
-            android:src="@drawable/ic_payment" />
+            android:src="@drawable/ic_payment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/paymentTitle1"
@@ -105,127 +113,161 @@
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="За квартиру"
+            android:text="@string/paymentTitle1"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/paymentIcon1"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/transaction1_amount"
+            android:id="@+id/paymentAmount1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="15dp"
             android:padding="10dp"
-            android:text="2 300 ₽"
+            android:text="@string/paymentAmount1"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/dark_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/paymentTitle1"
+            app:layout_constraintTop_toBottomOf="@id/paymentIcon1"
+            app:layout_constraintVertical_bias="1" />
 
-    <View
-        android:layout_width="300dp"
-        android:layout_height="1dp"
-        android:layout_marginEnd="15dp"
-        android:background="#77747B"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction1"
-        app:layout_constraintBottom_toTopOf="@id/transaction2"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/transaction2"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/payment2"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction1">
+        app:layout_constraintTop_toBottomOf="@id/payment1">
 
         <ImageView
+            android:id="@+id/paymentIcon2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginVertical="7dp"
             android:layout_marginStart="15dp"
             android:padding="10dp"
-            android:src="@drawable/ic_payment" />
+            android:src="@drawable/ic_payment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="contentDescription" />
 
         <TextView
+            android:id="@+id/paymentTitle2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="Цветы"
+            android:text="@string/paymentTitle2"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/paymentIcon2"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/transaction2_amount"
+            android:id="@+id/paymentAmount2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="15dp"
             android:padding="10dp"
-            android:text="1 600 ₽"
+            android:text="@string/paymentAmount2"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/dark_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/paymentTitle2"
+            app:layout_constraintTop_toBottomOf="@id/paymentIcon2"
+            app:layout_constraintVertical_bias="1" />
 
-    <View
-        android:layout_width="300dp"
-        android:layout_height="1dp"
-        android:layout_marginEnd="15dp"
-        android:background="#77747B"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction2"
-        app:layout_constraintBottom_toTopOf="@id/transaction3"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/transaction3"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/payment3"
         android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/transaction2">
+        app:layout_constraintTop_toBottomOf="@id/payment2">
 
         <ImageView
+            android:id="@+id/paymentIcon3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginVertical="7dp"
             android:layout_marginStart="15dp"
             android:padding="10dp"
-            android:src="@drawable/ic_payment" />
+            android:src="@drawable/ic_payment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="contentDescription" />
 
         <TextView
+            android:id="@+id/paymentTitle3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:text="Заправка"
+            android:text="@string/paymentTitle3"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/paymentIcon3"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/transaction3_amount"
+            android:id="@+id/paymentAmount3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginEnd="15dp"
             android:padding="10dp"
-            android:text="5 100 ₽"
+            android:text="@string/paymentAmount3"
             android:textColor="@color/white"
-            android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/accountsTitle"
@@ -234,9 +276,9 @@
         android:paddingStart="15dp"
         android:paddingTop="20dp"
         android:paddingBottom="15dp"
-        android:text="Счета"
+        android:text="@string/accountsTitle"
         android:textAllCaps="true"
-        android:textColor="#A1A1A6"
+        android:textColor="@color/gray"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -247,9 +289,9 @@
         android:layout_width="0dp"
         android:layout_height="105dp"
         android:layout_marginHorizontal="15dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
-        app:cardBackgroundColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/accountsTitle">
@@ -259,55 +301,56 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/account1_title"
+                android:id="@+id/accountTitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="Карточный счет 1"
-                android:textColor="#3B3B3B"
-                android:textSize="16dp"
+                android:text="@string/accountTitle1"
+                android:textColor="@color/black_olive"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/account1_desc"
+                android:id="@+id/accountDesc1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="Нет привязанных карт. Действия ограничены"
-                android:textColor="#3B3B3B"
-                android:textSize="12dp"
+                android:text="@string/accountDesc1"
+                android:textColor="@color/black_olive"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/account1_title"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accountTitle1" />
 
             <TextView
+                android:id="@+id/accountCardNumber1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="•• 5485 "
-                android:textColor="#939499"
-                android:textSize="14dp"
+                android:text="@string/accountCardNumber1"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/account1_desc"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accountDesc1" />
 
             <TextView
-                android:id="@+id/account1_amount"
+                android:id="@+id/accountAmount1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="12dp"
-                android:text="110 000 ₽"
-                android:textColor="#3B3B3B"
-                android:textSize="20dp"
+                android:text="@string/accountAmount1"
+                android:textColor="@color/black_olive"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -319,9 +362,9 @@
         android:layout_height="105dp"
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="12dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
-        app:cardBackgroundColor="#FFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/account1">
@@ -331,65 +374,59 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/account2_title"
+                android:id="@+id/accountTitle2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="Карточный счет 2"
-                android:textColor="#3B3B3B"
-                android:textSize="16dp"
+                android:text="@string/accountTitle2"
+                android:textColor="@color/black_olive"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/account2_desc"
+                android:id="@+id/accountDesc2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="Нет привязанных карт. Действия ограничены"
-                android:textColor="#3B3B3B"
-                android:textSize="12dp"
+                android:text="@string/accountDesc2"
+                android:textColor="@color/black_olive"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/account2_title"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accountTitle2" />
 
             <TextView
+                android:id="@+id/accountCardNumber2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="12dp"
-                android:text="•• 5485 "
-                android:textColor="#939499"
-                android:textSize="14dp"
+                android:text="@string/accountCardNumber2"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/account2_desc"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/accountDesc2" />
 
             <TextView
-                android:id="@+id/account2_amount"
+                android:id="@+id/accountAmount2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="12dp"
-                android:text="110 000 ₽"
-                android:textColor="#3B3B3B"
-                android:textSize="20dp"
+                android:text="@string/accountAmount2"
+                android:textColor="@color/black_olive"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
-<!--    <androidx.constraintlayout.widget.Group-->
-<!--        android:id="@+id/amountGroup"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:constraint_referenced_ids="account1_amount, account2_amount, transaction1_amount, transaction2_amount, transaction3_amount"-->
-<!--        tools:ignore="NotSibling" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

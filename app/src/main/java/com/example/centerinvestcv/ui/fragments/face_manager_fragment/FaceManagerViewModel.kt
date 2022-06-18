@@ -1,24 +1,57 @@
 package com.example.centerinvestcv.ui.fragments.face_manager_fragment
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import ru.centerinvest.hidingpersonaldata.db.RoomFaceRepository
 import ru.centerinvest.hidingpersonaldata.db.dao.FaceEntity
 
 class FaceManagerViewModel(private val roomFaceRepository: RoomFaceRepository) : ViewModel() {
 
-    fun loadAllFaceEntities(): Single<List<FaceEntity>> {
-        return roomFaceRepository.loadAllFaceEntities()
+    private val _loadAllFaceEntitiesMLD = MutableLiveData<Result<List<FaceEntity>>>()
+    val loadAllFaceEntitiesMLD: LiveData<Result<List<FaceEntity>>> = _loadAllFaceEntitiesMLD
+
+    private val _deleteFaceEntityMLD = MutableLiveData<Result<Unit>>()
+    val deleteFaceEntityMLD: LiveData<Result<Unit>> = _deleteFaceEntityMLD
+
+    private val _editFaceEntityMLD = MutableLiveData<Result<Unit>>()
+    val editFaceEntityMLD: LiveData<Result<Unit>> = _editFaceEntityMLD
+
+    fun loadAllFaceEntities() {
+        roomFaceRepository.loadAllFaceEntities()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ list ->
+                _loadAllFaceEntitiesMLD.value = Result.success(list)
+            }, {
+                _loadAllFaceEntitiesMLD.value = Result.failure(it)
+            })
     }
 
-    fun deleteFaceEntity(id: Int): Completable {
-        return roomFaceRepository.deleteFaceEntity(id)
+    fun deleteFaceEntity(id: Int) {
+        roomFaceRepository.deleteFaceEntity(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _deleteFaceEntityMLD.value = Result.success(Unit)
+            }) {
+                _deleteFaceEntityMLD.value = Result.failure(it)
+            }
     }
 
-    fun editFaceEntity(id: Int, newName: String): Completable =
+    fun editFaceEntity(id: Int, newName: String) {
         roomFaceRepository.editFaceEntity(id, newName)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                _editFaceEntityMLD.value = Result.success(Unit)
+            }) {
+                _editFaceEntityMLD.value = Result.failure(it)
+            }
+    }
 
     @Suppress("UNCHECKED_CAST")
     class Factory(private val roomFaceRepository: RoomFaceRepository): ViewModelProvider.Factory {

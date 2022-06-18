@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 object SharedPreferenceUtil {
 
-    private const val PREFERENCE_FILE_KEY = "com.example.catsapp.PREFERENCE_FILE_KEY"
+    private const val PREFERENCE_FILE_KEY = "PREFERENCE_FILE_KEY"
 
     private const val IS_HIDE_DATA_ENABLED = "IS_HIDE_DATA_ENABLED"
 

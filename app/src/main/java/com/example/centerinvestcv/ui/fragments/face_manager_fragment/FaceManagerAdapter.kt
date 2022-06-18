@@ -69,7 +69,12 @@ class FaceManagerAdapter(
                     binding.apply {
                         root.isVisible = true
                         faceName.text = model.face.name
-                        edit.setOnClickListener { actions.editFaceName(model.face.id) }
+                        edit.setOnClickListener {
+                            actions.editFaceName(
+                                model.face.id,
+                                model.face.name
+                            )
+                        }
                         delete.setOnClickListener { actions.deleteFace(model.face.id) }
                     }
                 } else {
@@ -129,7 +134,7 @@ class FaceManagerAdapter(
     }
 
     interface Actions {
-        fun editFaceName(id: Int)
+        fun editFaceName(id: Int, text: String)
 
         fun deleteFace(id: Int)
     }
