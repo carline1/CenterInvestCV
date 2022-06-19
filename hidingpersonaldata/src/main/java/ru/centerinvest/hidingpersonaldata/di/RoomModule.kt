@@ -8,7 +8,6 @@ import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import ru.centerinvest.hidingpersonaldata.db.RoomFaceDatabase
 import ru.centerinvest.hidingpersonaldata.db.RoomFaceRepository
-import java.security.SecureRandom
 
 
 @Module
@@ -16,6 +15,11 @@ class RoomModule(private val application: Application) {
 
     @Provides
     fun provideApplication(): Application = application
+
+    @Provides
+    @FaceFeature
+    fun provideRoomFaceRepository(roomFaceDatabase: RoomFaceDatabase): RoomFaceRepository =
+        RoomFaceRepository(roomFaceDatabase.faceDao())
 
     @Provides
     fun provideFaceDatabase(application: Application): RoomFaceDatabase {
@@ -27,10 +31,5 @@ class RoomModule(private val application: Application) {
             "face_db"
         ).openHelperFactory(factory).build()
     }
-
-    @Provides
-    @FaceFeature
-    fun provideRoomFaceRepository(roomFaceDatabase: RoomFaceDatabase): RoomFaceRepository =
-        RoomFaceRepository(roomFaceDatabase.faceDao())
 
 }

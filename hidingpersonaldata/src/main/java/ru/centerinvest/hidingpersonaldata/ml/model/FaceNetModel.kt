@@ -70,9 +70,6 @@ class FaceNetModel(
         return imageTensorProcessor.process(TensorImage.fromBitmap(image)).buffer
     }
 
-
-    // Op to perform standardization
-    // x' = ( x - mean ) / std_dev
     class StandardizeOp : TensorOperator {
 
         override fun apply(p0: TensorBuffer?): TensorBuffer {

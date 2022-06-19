@@ -6,7 +6,8 @@ import dagger.Component
 import ru.centerinvest.hidingpersonaldata.db.RoomFaceRepository
 import javax.inject.Scope
 
-@[FaceFeature Component(modules = [RoomModule::class])]
+@FaceFeature
+@Component(modules = [RoomModule::class])
 interface RoomFaceComponent {
     val roomFaceRepository: RoomFaceRepository
 }
