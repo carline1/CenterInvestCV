@@ -21,6 +21,8 @@ android {
                         "room.expandProjection": "true"]
             }
         }
+
+        buildConfigField "String", "KEY", '"5T2GzzcvL8C48EXvV9Copa90KhV65oZ4KrHFp2ul5kBigLgrhZt8lXkYcGwVOVqf"'
     }
 
     buildTypes {
